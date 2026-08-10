@@ -3,8 +3,6 @@ import AstroPureIntegration from 'astro-pure'
 import { defineConfig } from 'astro/config'
 import rehypeKatex from 'rehype-katex'
 import remarkMath from 'remark-math'
-import sitemap from '@astrojs/sitemap';
-
 // ADD IN CASE YOU WANT TO DEPLOY USING Deno
 //import deno from '@deno/astro-adapter';
 
