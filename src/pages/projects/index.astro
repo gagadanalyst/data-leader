@@ -1,0 +1,124 @@
+---
+import { Image } from "astro:assets";
+import PageLayout from "@/layouts/CommonPage.astro";
+import ProjectSection from "@/components/custom/projects/ProjectSection.astro";
+
+const headings = [
+  { depth: 2, slug: "Data-Engineering", text: "Data Engineering" },
+  { depth: 2, slug: "ML-Data-Science", text: "ML/Data Science" },
+  { depth: 2, slug: "Data-Analytics", text: "Data Analytics" },
+];
+---
+
+<PageLayout title="Projects" {headings}>
+  <p>Github Activities:</p>
+  <p>
+    <Image
+      src="https://ghchart.rshah.org/gagadanalyst"
+      alt="github activities"
+      inferSize
+      loading="lazy"
+    />
+  </p>
+
+  <h2 id="Data-Engineering">Data Engineering</h2>
+  <ProjectSection
+    projects={[
+      {
+        name: "Microsoft Fabric",
+        description:
+          "A project showcasing how different components of Microsoft Fabric come together to build Analytics projects.",
+        links: [
+          {
+            type: "github",
+            href: "https://github.com/gagadanalyst/Microsofot-Fabric-End-to-End-Project",
+          },
+        ],
+        image: "/src/assets/projects/Fabric.png",
+        url: "/data-leader/projects/fabric",
+      },
+    ]}
+  />
+
+  <h2 id="ML-Data-Science">ML/Data Science</h2>
+  <ProjectSection
+    projects={[
+      {
+        name: "Lead-Scoring",
+        description:
+          "A project to showcase a practical machine learning/data science project that improves business processes.",
+        links: [
+          {
+            type: "github",
+            href: "https://github.com/gagadanalyst/Lead-Scoring-machine-learning",
+          },
+        ],
+        image: "/src/assets/projects/Lead-Scoring.png",
+        url: "/data-leader/projects/leadScoring",
+      },
+      {
+        name: "Diabetes Classification",
+        description:
+          "A project to implement KNN manually and showcase how a seemingly simple model can perform well on a dataset.",
+        links: [
+          {
+            type: "github",
+            href: "https://github.com/gagadanalyst/diabetes-knn-classification",
+          },
+        ],
+        image: "/src/assets/projects/classification.png",
+        url: "/data-leader/projects/diab",
+      },
+    ]}
+  />
+  <h2 id="Data-Analytics">Data Analytics</h2>
+  <ProjectSection
+    projects={[
+      {
+        name: "Uber Case Study using PySpark",
+        description:
+          "Project to use PySpark DataFrame API for uber demand supply data analysis",
+        links: [
+          {
+            type: "github",
+            href: "https://github.com/gagadanalyst/Uber-Case-Study-PySpark",
+          },
+        ],
+        image: "/src/assets/projects/pyspark.jpg",
+        url: "/data-leader/projects/pyspark",
+      },
+      {
+        name: "AdventureWorks PowerBI Project",
+        description: "A project showcasing PowerBI Skills",
+        links: [
+          {
+            type: "github",
+            href: "https://github.com/gagadanalyst/AdventureWorks-Power-BI-Project  ",
+          },
+        ],
+        image: "/src/assets/projects/powerBI.png",
+        url: "/data-leader/projects/powerbi",
+      },
+    ]}
+  />
+</PageLayout>
+
+<style>
+  .sponsorship-card {
+    & .sponsorship-card-img {
+      opacity: 0.3;
+      --un-blur: blur(4px);
+      filter: var(--un-blur);
+    }
+
+    &:hover {
+      & .sponsorship-card-icon {
+        opacity: 0;
+      }
+      & .sponsorship-card-img {
+        opacity: 1;
+        --un-blur: blur(0);
+      }
+    }
+  }
+</style>

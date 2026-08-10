@@ -1,0 +1,121 @@
+---
+import { Button } from "astro-pure/user";
+import PageLayout from "@/layouts/CommonPage.astro";
+---
+
+<PageLayout title="" showaside="false">
+  {/*<canvas id="pdf-canvas"></canvas>*/}
+  <div id="holder">
+    <div
+      class="animate mb-10 flex flex-row items-center gap-x-5 justify-between !mb-0"
+    >
+      <Button id="prev" variant="back">Prev Page</Button>
+      <span
+        >Page: <span id="page_num"></span> / <span id="page_count"></span></span
+      >
+      <Button id="next" variant="ahead">Next Page</Button>
+    </div>
+    <div>
+      <canvas id="the-canvas" class="w-full border-2 border-solid bg-gray-300"
+      ></canvas>
+    </div>
+
+    <div
+      class="animate mb-10 flex flex-row items-center gap-x-5 justify-between mt-7"
+    >
+      <Button id="prev1" variant="back">Prev Page</Button>
+
+      <span
+        >Page: <span id="page_num1"></span> / <span id="page_count1"
+        ></span></span
+      >
+      <Button id="next1" variant="ahead">Next Page</Button>
+    </div>
+  </div>
+  <cv></cv>
+</PageLayout>
+
+<script type="module" lang="js">
+  import * as pdfjsLib from "/data-leader/scripts/pdf.mjs";
+  pdfjsLib.GlobalWorkerOptions.workerSrc =
+    "/data-leader/scripts/pdf.worker.mjs";
+
+  var pdfDoc = null;
+  var pageNum;
+
+  var canvas = document.getElementById("the-canvas");
+
+  function renderPDF(pdfUrl) {
+    pdfDoc = null;
+    pageNum = 1;
+    let scale = 4;
+    pdfjsLib.getDocument(pdfUrl).promise.then(function getPdf(_pdfDoc) {
+      pdfDoc = _pdfDoc;
+      renderPage(pageNum, scale);
+    });
+  }
+
+  function renderPage(pageNum, scale = 4) {
+    // Using promise to fetch the page
+    pdfDoc.getPage(pageNum).then(function (page) {
+      var viewport = page.getViewport({ scale: scale });
+      var ctx = canvas.getContext("2d");
+      canvas.width = viewport.width;
+      canvas.height = viewport.height;
+
+      // Render PDF page into canvas context
+      var renderContext = {
+        canvasContext: ctx,
+        background: "rgba(0,0,0,0)",
+        viewport: viewport,
+      };
+      page.render(renderContext);
+    });
+    // Update page counters
+    document.getElementById("page_num").textContent = pageNum;
+    document.getElementById("page_count").textContent = pdfDoc.numPages;
+
+    document.getElementById("page_num1").textContent = pageNum;
+    document.getElementById("page_count1").textContent = pdfDoc.numPages;
+  }
+
+  {
+    /*const canvas = document.getElementById("the-canvas");
+  console.log(canvas);
+  const pdfUrl = "GSingh.pdf";
+
+  pdfjsLib.getDocument(pdfUrl).promise.then(function (pdfDoc) {
+    pdfDoc.getPage(1).then(function (page) {
+      const viewport = page.getViewport({ scale: 1 });
+      canvas.width = viewport.width;
+      canvas.height = viewport.height;
+      const ctx = canvas.getContext("2d");
+      const renderContext = { canvasContext: ctx, viewport: viewport,};
+      page.render(renderContext);
+    });
+});*/
+  }
+
+  function goNext() {
+    if (pageNum >= pdfDoc.numPages) return;
+    pageNum++;
+    renderPage(pageNum);
+  }
+
+  document.getElementById("next").onclick = goNext;
+  document.getElementById("next1").onclick = goNext;
+  function goPrevious() {
+    if (pageNum <= 1) return;
+    pageNum--;
+    renderPage(pageNum);
+  }
+  document.getElementById("prev").onclick = goPrevious;
+  document.getElementById("prev1").onclick = goPrevious;
+
+  function zoom(newScale) {
+    renderPage(pageNum, newScale);
+  }
+
+  const pdfUrl = "/data-leader/Gaga.pdf";
+  renderPDF(pdfUrl);
+</script>

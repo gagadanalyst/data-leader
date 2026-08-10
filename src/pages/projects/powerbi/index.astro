@@ -1,0 +1,37 @@
+---
+import PageLayout from "@/layouts/CommonPage.astro";
+---
+
+<PageLayout
+  title="AdventurWorks PowerBI Project"
+  showaside="false"
+  back="/data-leader/projects"
+>
+  <div id="fileContent" style="all: revert"></div>
+</PageLayout>
+
+<script>
+  fetch("/data-leader/myprojects/powerbi.html")
+    .then((response) => response.text())
+    .then((text) => new DOMParser().parseFromString(text, "text/html"))
+    .then((dom) => {
+      dom.getElementsByTagName("html")[0].style.fontFamily =
+        "Satoshi, sans-serif";
+      for (const element of dom.getElementsByTagName("p")) {
+        element.style.fontSize = "1rem";
+      }
+      for (const element of dom.getElementsByTagName("li")) {
+        element.style.fontSize = "1rem";
+      }
+      return document
+        .getElementById("fileContent")
+        ?.appendChild(dom.documentElement);
+    })
+    .then((fulldoc) => {
+      for (const element of fulldoc!.getElementsByTagName("pre")) {
+        element.style.backgroundColor = "white";
+        element.style.color = "black";
+        element.style.fontSize = "0.8rem";
+      }
+    });
+</script>

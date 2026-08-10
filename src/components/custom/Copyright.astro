@@ -1,0 +1,108 @@
+---
+import type { CollectionKey, InferEntrySchema } from 'astro:content'
+import config from 'virtual:config'
+
+import { cn, getFormattedDate } from 'astro-pure/utils'
+import { QRCode } from 'astro-pure/advanced'
+import { Icon } from 'astro-pure/user'
+
+interface Props<T extends CollectionKey> {
+  data: InferEntrySchema<T>
+  class?: string
+}
+
+const {
+  data: { heroImage, title, publishDate },
+  class: className
+} = Astro.props
+
+const image = typeof heroImage?.src === 'string' ? heroImage?.src : (heroImage?.src?.src ?? '')
+
+const shares = {
+  weibo: {
+    link: `http://service.weibo.com/share/share.php?url=${Astro.url}&title=${title}&pic=${image}`
+  },
+  x: {
+    link: `https://x.com/intent/tweet?text='${title}'&url='${Astro.url}'&via='${config.author}'`
+  },
+  bluesky: {
+    link: `https://bsky.app/intent/compose?text=${title}%0A${Astro.url}`
+  }
+} as const
+---
+
+<div
+  class={cn(
+    'relative flex flex-col gap-y-2 rounded-xl border px-3 sm:px-4 py-2 sm:py-3',
+    className
+  )}
+>
+  <Icon class='absolute end-4 top-4 size-20 opacity-10' name='copyright' />
+
+  {/* title & link */}
+  <div class='flex flex-row justify-center gap-x-5 gap-y-1 sm:gap-x-8'>
+    <div class='font-medium text-foreground'>{title}</div>
+    <a href={Astro.url} target='_blank' class="flex flex-row gap-x-1"> Share 
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m20 12l-6.4-7v3.5C10.4 8.5 4 10.6 4 19c0-1.167 1.92-3.5 9.6-3.5V19z"/></svg>
+    </a>
+  </div>
+
+  {/* common info */}
+  <div class='flex flex-row flex-wrap justify-evenly gap-x-5 gap-y-1 sm:gap-x-8'>
+    <div class='flex gap-x-2 sm:flex-col'>
+      <span>Author</span>
+      <span class='text-sm text-foreground max-sm:place-self-center'>{config.author}</span>
+    </div>
+    {
+      publishDate && (
+        <div class='flex gap-x-2 sm:min-w-16 sm:flex-col'>
+          <span>Published at</span>
+          <span class='text-sm text-foreground max-sm:place-self-center'>
+            {getFormattedDate(publishDate, {
+              month: 'long'
+            })}
+          </span>
+        </div>
+      )
+    }
+    <div class='flex gap-x-2 sm:flex-col'>
+      <span>Copyright</span>
+      <a
+        class='text-sm text-foreground max-sm:place-self-center'
+        href='https://creativecommons.org/licenses/by/4.0/'
+        target='_blank'
+      >
+        CC BY-NC-SA 4.0
+      </a>
+  </div>
+
+  {/* functions */}
+
+</div>
+
+
+
+<style>
+  #qrcode-container.expanded {
+    max-height: 11rem;
+    transform: translateY(4px);
+    opacity: 100;
+  }
+</style>
+
+<script>
+  import { showToast } from 'astro-pure/utils'
+
+  // Copy link
+  const copyLink = document.getElementById('copy-link')
+  copyLink?.addEventListener('click', () => {
+    navigator.clipboard.writeText(window.location.href)
+    // Show toast
+    showToast({ message: 'Link copied!' })
+  })
+
+  // QRCode
+  const getQRCode = document.getElementById('get-qrcode')
+  const qrcodeContainer = document.getElementById('qrcode-container')
+  getQRCode?.addEventListener('click', () => qrcodeContainer?.classList.toggle('expanded'))
+</script>
