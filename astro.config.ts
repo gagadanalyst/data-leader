@@ -56,7 +56,7 @@ export default defineConfig({
   },
 
   integrations: [// astro-pure will automatically add sitemap, mdx & unocss
-  sitemap(),
+  
   // mdx(),
   // (await import('@playform/compress')).default({
   //   SVG: false,
